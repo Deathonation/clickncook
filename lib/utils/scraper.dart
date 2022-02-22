@@ -2,8 +2,8 @@ import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
 class Scraper {
-  static void getData() async {
-    var value = 'chicken biryani recipe';
+  static getData(str) async {
+    String value = str;
     value = value.replaceAll(' ', '-');
     final URL = 'https://www.indianhealthyrecipes.com/?s=$value';
     print(URL);
@@ -14,12 +14,9 @@ class Scraper {
     final html = parse(body);
     print("hihtml $html");
 
-    final title = html.querySelector('.entry-title-link').text;
+    String title = html.querySelector('.entry-title-link').text;
 
     print('Title: $title');
+    return title;
   }
-}
-
-void main(List<String> arguments) {
-  Scraper.getData();
 }
