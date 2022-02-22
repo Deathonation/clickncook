@@ -1,11 +1,9 @@
-import 'dart:convert';
-import 'package:clickncook/utils/scraper.dart';
+// import 'package:clickncook/utils/scraper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:flutter/widgets.dart';
+import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 
 class SearchBarDemoHome extends StatefulWidget {
   @override
@@ -25,6 +23,7 @@ class _SearchBarDemoHomeState extends State<SearchBarDemoHome> {
   //   final path = await _localPath;
   //   return File('D:/searchbar.txt');
   // }
+
   SearchBar searchBar;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -34,15 +33,15 @@ class _SearchBarDemoHomeState extends State<SearchBarDemoHome> {
         actions: [searchBar.getSearchAction(context)]);
   }
 
-  void onSubmit(String value) {
-    Scraper.enterValue.value = textEditingController.text;
-
+  String onSubmit(String value) {
     setState(() {
+      Scraper.enterValue.value = textEditingController.text;
       // final response = await http.get('http://127.0.0.1:5000/api');
       // final decoded = jsonDecode(response.body) as Map<String, dynamic>;
     });
     // => _scaffoldKey.currentState
     //     .showSnackBar(new SnackBar(content: new Text('You wrote $value!')))
+    return Scraper.enterValue.value;
   }
 
   _SearchBarDemoHomeState() {
@@ -64,17 +63,36 @@ class _SearchBarDemoHomeState extends State<SearchBarDemoHome> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        appBar: searchBar.build(context),
-        key: _scaffoldKey,
-        body: new Center(
-          // child: new Text("Don't look at me! Press the search button!")),
-          child: (searchText != null)
-              ? Container(
-                  width: 300,
-                  height: 400,
-                  child: Text(searchText),
-                )
-              : Text("no data"),
-        ));
+        appBar: searchBar.build(context), key: _scaffoldKey, body: Scraper());
+  }
+}
+
+class Scraper extends StatelessWidget {
+  const Scraper({Key key}) : super(key: key);
+  static ValueNotifier<String> enterValue = ValueNotifier('');
+  Future<String> getData(String value) async {
+    var value = 'chicken biryani recipe';
+    value = value.replaceAll(' ', '-');
+    final URL = 'https://www.indianhealthyrecipes.com/?s=$value';
+    print(URL);
+    final response = await http.get(Uri.parse(URL));
+    print("hiresponse $response");
+    final body = response.body;
+    print("hibody $body");
+    final html = parse(body);
+    print("hihtml $html");
+
+    final title = html.querySelector('.entry-title-link').text;
+
+    print('Title: $title');
+    return title;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Future<String> title = getData(Scraper.enterValue.value);
+    return Container(
+      child: Text(title.toString()),
+    );
   }
 }

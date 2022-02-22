@@ -1,4 +1,4 @@
-import 'package:clickncook/searchBar.dart';
+// import 'package:clickncook/searchBar.dart';
 import 'package:clickncook/searchButton.dart';
 import 'package:clickncook/utils/routes.dart';
 import 'package:flutter/material.dart';
@@ -36,18 +36,56 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool typing = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Start the application"),
-        actions: [GoToSearch()],
+        // title: Text("Start the application"),
+        // actions: [GoToSearch()],
+        title: typing ? TextBox() : Text("ClickNCook"),
+
+        actions: [
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {},
+                child: Icon(
+                  Icons.search,
+                  size: 26.0,
+                ),
+              )),
+        ],
       ),
       body: SafeArea(
         child: Center(
           child: Container(
             child: Text("Our Scarped Files yoyo"),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class TextBox extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0)),
+      width: 400,
+      alignment: Alignment.centerLeft,
+      color: Colors.white,
+      child: TextField(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(
+              width: 0,
+              style: BorderStyle.none,
+            ),
+          ),
+          hintText: 'Search',
         ),
       ),
     );

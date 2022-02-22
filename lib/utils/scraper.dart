@@ -1,22 +1,25 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
-import 'package:clickncook/searchBar.dart';
-
-SearchBarDemoHome value;
-
-// var recipe = value
 
 class Scraper {
-  static ValueNotifier<String> enterValue = ValueNotifier('');
-  // const Scraper({Key key}) : super(key: key);
-  void initState() {
-    loadData();
-  }
+  static void getData() async {
+    var value = 'chicken biryani recipe';
+    value = value.replaceAll(' ', '-');
+    final URL = 'https://www.indianhealthyrecipes.com/?s=$value';
+    print(URL);
+    final response = await http.get(Uri.parse(URL));
+    print("hiresponse $response");
+    final body = response.body;
+    print("hibody $body");
+    final html = parse(body);
+    print("hihtml $html");
 
-  loadData() async {
-    print(enterValue.value + " ");
-  }
+    final title = html.querySelector('.entry-title-link').text;
 
-  final URL = "https://www.indianhealthyrecipes.com/?s=${enterValue}";
+    print('Title: $title');
+  }
+}
+
+void main(List<String> arguments) {
+  Scraper.getData();
 }
