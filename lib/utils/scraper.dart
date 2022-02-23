@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 class Scraper {
   static getData(str) async {
     String value = str;
+    // value = "pav bhaji";
     value = value.replaceAll(' ', '-');
     final URL = 'https://www.indianhealthyrecipes.com/?s=$value';
     print(URL);
@@ -20,3 +21,7 @@ class Scraper {
     return title;
   }
 }
+
+// void main() {
+//   Scraper.getData("str");
+// }

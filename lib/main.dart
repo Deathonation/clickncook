@@ -3,12 +3,13 @@
 // import 'package:clickncook/searchButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_search_bar/flutter_search_bar.dart';
+// import 'package:flutter_search_bar/flutter_search_bar.dart';
 
 import 'package:clickncook/utils/routes.dart';
 import 'package:clickncook/utils/scraper.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -95,6 +96,8 @@ class DataSearch extends SearchDelegate<String> {
       IconButton(
           icon: Icon(Icons.check),
           onPressed: () {
+            print(query);
+
             showResults(context);
           }),
       IconButton(
@@ -116,15 +119,14 @@ class DataSearch extends SearchDelegate<String> {
         });
   }
 
-  String title;
+  String title = "";
 
   @override
   Widget buildResults(BuildContext context) {
     // TODO: implement buildResults
-    String title;
-
     Scraper.getData(query).then((result) {
-      this.title = result;
+      title = result;
+      print("HELLO");
     });
 
     return Center(
@@ -133,7 +135,7 @@ class DataSearch extends SearchDelegate<String> {
           height: 500,
           child: Card(
             color: Colors.white,
-            child: Text(title.toString()),
+            child: Text(title),
           )),
     );
   }
