@@ -1,7 +1,12 @@
-import 'package:clickncook/searchdelegate.dart';
+// import 'package:clickncook/searchdelegate.dart';
+import 'dart:io';
+
+import 'package:clickncook/utils/scraper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:clickncook/utils/routes.dart';
+import 'package:clickncook/pickImage.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -41,67 +46,125 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool typing = false;
+  final textController = TextEditingController();
+  int _page = 0;
+
+  // imagepicker code
 
   @override
-  void initState() {
-    super.initState();
-    setState(() {});
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    textController.dispose();
+    super.dispose();
+  }
+
+  bool typing = false;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   setState(() {});
+  // }
+
+  Widget bodyFunction() {
+    switch (_page) {
+      case 0:
+        return Center(child: Text("HomePage"));
+
+        break;
+      case 1:
+        setState(() {});
+        return Scrape();
+
+        break;
+      default:
+        return Container(child: Text("nothing"));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    void onsubmit() {
+      _page = 1;
+    }
+
     return Scaffold(
       appBar: AppBar(
-        // title: Text("Start the application"),
-        // actions: [GoToSearch()],
-        // title: typing ? TextBox() : Text("ClickNCook"),
-        title: Text("ClickNCook"),
-
+        title: Text(
+          "ClickNCook",
+          style: TextStyle(fontSize: 29),
+        ),
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () async {
-                  showSearch(context: context, delegate: DataSearch());
-                }),
-          )
+          // Padding(
+          //   padding: EdgeInsets.only(right: 20.0),
+          //   child: IconButton(
+          //       icon: Icon(Icons.search),
+          //       onPressed: () async {
+          //         showSearch(context: context, delegate: DataSearch());
+          //       }),
+          // )
         ],
-      ),
-      body: SafeArea(
-        child: Center(
-          child: Container(
-            child: Text("Our Scarped Files yoyo"),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(50.0),
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: Row(
+              children: [
+                Container(
+                  width: 300,
+                  height: 40,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: "Searh Dishes",
+                      fillColor: Colors.white,
+                      filled: true,
+                    ),
+                    controller: textController,
+                    textAlign: TextAlign.start,
+                    onSubmitted: (String x) {
+                      setState(() {
+                        _page = 1;
+                      });
+                    },
+                  ),
+                ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 7.0, bottom: 2.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.lightGreenAccent),
+                      height: 40,
+                      // color: Colors.lightGreenAccent,
+                      child: IconButton(
+                          icon: Icon(
+                            Icons.search_outlined,
+                            color: Colors.black45,
+                            size: 28,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _page = 1;
+                            });
+                          }),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
+      ),
+      body: SafeArea(
+        child: bodyFunction(),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const ImageSearch())),
+        backgroundColor: Colors.grey,
+        child: Text("Image Search"),
       ),
     );
   }
 }
-
-
-
-// class TextBox extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0)),
-//       width: 400,
-//       alignment: Alignment.centerLeft,
-//       color: Colors.white,
-//       child: TextField(
-//         decoration: InputDecoration(
-//           border: OutlineInputBorder(
-//             borderRadius: BorderRadius.circular(10.0),
-//             borderSide: BorderSide(
-//               width: 0,
-//               style: BorderStyle.none,
-//             ),
-//           ),
-//           hintText: 'Search',
-//         ),
-//       ),
-//     );
-//   }
-// }
