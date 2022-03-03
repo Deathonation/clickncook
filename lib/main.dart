@@ -1,6 +1,7 @@
 // import 'package:clickncook/searchdelegate.dart';
 import 'dart:io';
 
+import 'package:clickncook/screens/login_screen.dart';
 import 'package:clickncook/utils/scraper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -30,7 +31,7 @@ class _MyAppState extends State<MyApp> {
       ),
       // initialRoute: MyRoutes.searchBarroute,
       routes: {
-        "/": (context) => new HomePage(),
+        "/": (context) => new LoginScreen(),
         MyRoutes.homepageroute: (context) => HomePage(),
         // MyRoutes.loginRoute: (context) => LoginPage(),
       },
@@ -74,7 +75,9 @@ class _HomePageState extends State<HomePage> {
         break;
       case 1:
         setState(() {});
-        return Scrape();
+        return Scrape(
+          text: textController.text,
+        );
 
         break;
       default:
@@ -82,12 +85,9 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  String text = "";
   @override
   Widget build(BuildContext context) {
-    void onsubmit() {
-      _page = 1;
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(

@@ -4,18 +4,17 @@ import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
 class Scrape extends StatefulWidget {
-  const Scrape({Key key}) : super(key: key);
+  Scrape({Key key, this.text}) : super(key: key);
+  final String text;
 
   @override
   _ScrapeState createState() => _ScrapeState();
 }
 
 class _ScrapeState extends State<Scrape> {
-  final SearchText;
   String passText = "";
 
-  _ScrapeState(this.SearchText);
-  @override
+  // @override
   void initState() {
     super.initState();
     setState(() {});
@@ -23,15 +22,21 @@ class _ScrapeState extends State<Scrape> {
 
   @override
   Widget build(BuildContext context) {
-    Scraper.getData("chicken Biryani").then((result) {
-      this.passText = result;
-      print(this.passText + " LOL");
-      setState(() {});
+    setState(() {
+      Scraper.getData(widget.text).then((result) {
+        passText = result;
+      });
     });
+    String value = "chicken biryani";
+    // value = "pav bhaji";
 
-    return Container(
-      child: ListTile(
-        title: Text(this.passText),
+    return SafeArea(
+      child: Center(
+        child: Container(
+          child: ListTile(
+            title: Text(passText),
+          ),
+        ),
       ),
     );
   }
