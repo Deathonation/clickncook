@@ -1,5 +1,4 @@
 // import 'package:clickncook/searchdelegate.dart';
-import 'dart:io';
 
 import 'package:clickncook/screens/login_screen.dart';
 import 'package:clickncook/utils/scraper.dart';
@@ -7,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:clickncook/utils/routes.dart';
 import 'package:clickncook/pickImage.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:html/parser.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -49,7 +49,26 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final textController = TextEditingController();
   int _page = 0;
+  String result = "";
+  Future<String> ans;
+  void getData(str) async {
+    String value = str;
+    // value = "pav bhaji";
+    // value = value.replaceAll(' ', '-');
+    final URL = 'https://www.indianhealthyrecipes.com/?s=$value';
+    print(URL);
+    final response = await http.get(Uri.parse(URL));
+    // print("hiresponse $response");
+    final body = response.body;
+    // print("hibody $body");
+    final html = parse(body);
+    // print("hihtml $html");
+    setState(() {
+      result = html.querySelector('.entry-title-link').text;
 
+      print('Title: $result');
+    });
+  }
   // imagepicker code
 
   @override
@@ -61,11 +80,14 @@ class _HomePageState extends State<HomePage> {
 
   bool typing = false;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   setState(() {});
-  // }
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      getData(textController.text);
+      print(result);
+    });
+  }
 
   Widget bodyFunction() {
     switch (_page) {
@@ -74,10 +96,7 @@ class _HomePageState extends State<HomePage> {
 
         break;
       case 1:
-        setState(() {});
-        return Scrape(
-          text: textController.text,
-        );
+        return Text(result);
 
         break;
       default:
@@ -85,7 +104,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  String text = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,6 +141,7 @@ class _HomePageState extends State<HomePage> {
                     textAlign: TextAlign.start,
                     onSubmitted: (String x) {
                       setState(() {
+                        getData(textController.text);
                         _page = 1;
                       });
                     },
@@ -144,6 +163,7 @@ class _HomePageState extends State<HomePage> {
                             size: 28,
                           ),
                           onPressed: () {
+                            getData(textController.text);
                             setState(() {
                               _page = 1;
                             });
@@ -157,7 +177,15 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: SafeArea(
-        child: bodyFunction(),
+        child: result == ""
+            ? Center(
+                child: CircleAvatar(
+                  radius: 30.0,
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: Colors.red,
+                ),
+              )
+            : bodyFunction(),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.push(context,
@@ -167,4 +195,10 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+@override
+Widget build(BuildContext context) {
+  // TODO: implement build
+  throw UnimplementedError();
 }
