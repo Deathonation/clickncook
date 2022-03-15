@@ -182,7 +182,7 @@ class HomePageContent extends StatelessWidget {
         alignment: Alignment.topCenter,
         child: Container(
           height: 500,
-          width: 300,
+          width: 320,
           child: PageView(
             scrollDirection: Axis.horizontal,
             children: [
@@ -204,13 +204,23 @@ class SomeListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 500,
-      width: 270,
       child: new Card(
         child: new Center(
             child: ListView(
           children: [
             ListTile(title: Text(result)),
+            ListBody(
+              children: [
+                Image.network(
+                  "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8NHx8fGVufDB8fHx8&w=1000&q=80",
+                  height: 310,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 18, right: 12, top: 8),
+                  child: Text("Description:  $result"),
+                )
+              ],
+            )
           ],
         )),
       ),
