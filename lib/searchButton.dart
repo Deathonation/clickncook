@@ -1,6 +1,5 @@
 import 'package:clickncook/searchBar.dart';
 import 'package:flutter/material.dart';
-import 'package:clickncook/utils/routes.dart';
 
 class GoToSearch extends StatelessWidget {
   const GoToSearch({Key key}) : super(key: key);
