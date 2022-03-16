@@ -57,11 +57,14 @@ class Scraper {
     // print("hihtml $html");
 
     String title = html.querySelector('.entry-title-link').text;
+    final image = html.querySelectorAll('.entry-title-link');
+    print(image);
 
     print('Title: $title');
     return title;
   }
-// void main() {
-//   Scraper.getData("str");
-// }
+
+  void main() {
+    Scraper.getData("biryani");
+  }
 }
