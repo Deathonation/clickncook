@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:html/parser.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
+import 'package:html/dom.dart' as dom;
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:clickncook/pickImage.dart';
 
@@ -12,27 +15,50 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<String> titles;
+  List<String> links;
+  List<String> imagesLinks;
   final textController = TextEditingController();
   int _page = 0;
   String result = "";
   Future<String> ans;
   void getData(str) async {
     String value = str;
+    final URL = 'https://www.indianhealthyrecipes.com/?s=$value';
+    final response = await http.get(URL);
+    dom.Document document = parser.parse(response.body);
+    setState(() {
+      final title = document.getElementsByClassName('entry-header');
+      titles =
+          title.map((e) => e.getElementsByTagName("a")[0].innerHtml).toList();
+      print(titles[0]);
+      final link = document.getElementsByClassName(
+          'authority-featured-image authority-image-aligncenter');
+      links = link
+          .map((e) => e.getElementsByTagName("a")[0].attributes['href'])
+          .toList();
+      print(links[0]);
+
+      final images = document.getElementsByClassName('entry-image-link');
+      imagesLinks = images
+          .map((e) => e.getElementsByTagName("img")[0].attributes['src'])
+          .toList();
+    });
+
+    // print(URL);
+    // final response = await http.get(Uri.parse(URL));
+    // final body = response.body;
+    // final html = parse(body);
+    // setState(() {
+    //   result = html.querySelector('.entry-title-link').text;
+    //   final image = html.querySelectorAll('.entry-title-link');
+    //   print(image);
+    //   print('Title: $result');
+    // });
+
     // value = "pav bhaji";
     // value = value.replaceAll(' ', '-');
-    final URL = 'https://www.indianhealthyrecipes.com/?s=$value';
-    print(URL);
-    final response = await http.get(Uri.parse(URL));
-    // print("hiresponse $response");
-    final body = response.body;
-    // print("hibody $body");
-    final html = parse(body);
-    // print("hihtml $html");
-    setState(() {
-      result = html.querySelector('.entry-title-link').text;
-
-      print('Title: $result');
-    });
+    //
   }
   // imagepicker code
 
@@ -61,7 +87,12 @@ class _HomePageState extends State<HomePage> {
 
         break;
       case 1:
-        return HomePageContent(result: result);
+        return HomePageContent(
+          result: result,
+          imagesLinks: imagesLinks,
+          links: links,
+          titles: titles,
+        );
 
         break;
       default:
@@ -143,7 +174,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: SafeArea(
-        child: result == ""
+        child: titles == null
             ? Center(
                 child: CircleAvatar(
                   radius: 30.0,
@@ -167,30 +198,84 @@ Widget build(BuildContext context) {
   throw UnimplementedError();
 }
 
-class HomePageContent extends StatelessWidget {
+class HomePageContent extends StatefulWidget {
   final String result;
+  final List<String> titles;
+  final List<String> links;
+  final List<String> imagesLinks;
   HomePageContent({
     Key key,
     @required this.result,
+    @required this.imagesLinks,
+    @required this.links,
+    @required this.titles,
   }) : super(key: key);
 
+  @override
+  _HomePageContentState createState() => _HomePageContentState();
+}
+
+class _HomePageContentState extends State<HomePageContent> {
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: Align(
         alignment: Alignment.topCenter,
-        child: Container(
-          height: 500,
-          width: 320,
-          child: PageView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              SomeListView(result: this.result),
-              SomeListView(result: this.result),
-              SomeListView(result: this.result)
-            ],
-          ),
+        child: ListView.builder(
+          itemCount: widget.links.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () async {
+                dynamic url = widget.links[index];
+                print(widget.links[index]);
+                // print(!await canLaunch(url));
+                if (!await canLaunch(url)) {
+                  print("inside");
+                  await launch(url);
+                } else
+                  print("ERROR launching url");
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Card(
+                  child: Container(
+                    color: Colors.black38,
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 12.0, top: 5),
+                            child: Text(
+                              widget.titles[index],
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange[900],
+                                  fontSize: 20),
+                            ),
+                          ),
+                        ),
+                        // SizedBox(
+                        //   height: 15,
+                        // ),
+                        // Text(
+                        //   widget.links[index],
+                        // ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Image.network(widget.imagesLinks[index]),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
