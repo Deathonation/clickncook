@@ -1,31 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
-import 'package:html/dom.dart' as dom;
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:clickncook/pickImage.dart';
+import 'package:clickncook/screens/dish_screen.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> titles;
-  List<String> links;
-  List<String> imagesLinks;
+  late List<String> titles;
+  late List<String> links;
+  late List<String> imagesLinks;
   final textController = TextEditingController();
   int _page = 0;
   String result = "";
-  Future<String> ans;
+  late Future<String> ans;
   void getData(str) async {
     String value = str;
     final URL = 'https://www.indianhealthyrecipes.com/?s=$value';
-    final response = await http.get(URL);
+    final response = await http.get(Uri.parse(URL));
     dom.Document document = parser.parse(response.body);
     setState(() {
       final title = document.getElementsByClassName('entry-header');
@@ -93,7 +92,6 @@ class _HomePageState extends State<HomePage> {
           links: links,
           titles: titles,
         );
-
         break;
       default:
         return Container(child: Text("nothing"));
@@ -107,18 +105,8 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.transparent,
         title: Text(
           "ClickNCook",
-          style: TextStyle(fontSize: 29),
+          style: TextStyle(fontSize: 30),
         ),
-        actions: [
-          // Padding(
-          //   padding: EdgeInsets.only(right: 20.0),
-          //   child: IconButton(
-          //       icon: Icon(Icons.search),
-          //       onPressed: () async {
-          //         showSearch(context: context, delegate: DataSearch());
-          //       }),
-          // )
-        ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(50.0),
           child: Align(
@@ -129,6 +117,7 @@ class _HomePageState extends State<HomePage> {
                   width: 300,
                   height: 40,
                   child: TextField(
+                    autofocus: false,
                     decoration: InputDecoration(
                       hintText: "Searh Dishes",
                       fillColor: Colors.white,
@@ -185,8 +174,8 @@ class _HomePageState extends State<HomePage> {
             : bodyFunction(),
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const ImageSearch())),
+          onPressed: () => Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ImageSearch())),
           backgroundColor: Colors.grey,
           child: Icon(Icons.camera_alt_outlined)),
     );
@@ -198,18 +187,27 @@ Widget build(BuildContext context) {
   throw UnimplementedError();
 }
 
+int itemindex = 0;
+
 class HomePageContent extends StatefulWidget {
   final String result;
   final List<String> titles;
   final List<String> links;
   final List<String> imagesLinks;
-  HomePageContent({
-    Key key,
-    @required this.result,
-    @required this.imagesLinks,
-    @required this.links,
-    @required this.titles,
+  const HomePageContent({
+    Key? key,
+    required this.result,
+    required this.titles,
+    required this.links,
+    required this.imagesLinks,
   }) : super(key: key);
+  // HomePageContent({
+  //   Key key,
+  //   @required this.result,
+  //   @required this.imagesLinks,
+  //   @required this.links,
+  //   @required this.titles,
+  // }) : super(key: key);
 
   @override
   _HomePageContentState createState() => _HomePageContentState();
@@ -227,14 +225,24 @@ class _HomePageContentState extends State<HomePageContent> {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () async {
-                dynamic url = widget.links[index];
-                print(widget.links[index]);
-                // print(!await canLaunch(url));
-                if (!await canLaunch(url)) {
-                  print("inside");
-                  await launch(url);
-                } else
-                  print("ERROR launching url");
+                itemindex = index;
+                // dynamic url = widget.links[index];
+                // print(widget.links[index]);
+                // // print(!await canLaunch(url));
+                // if (!await canLaunch(url)) {
+                //   print("inside");
+                //   await launch(url);
+                // } else
+                //   print("ERROR launching url");
+                print("$index $itemindex");
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => new DishDesc(
+                            index: itemindex,
+                            imageLinks: widget.imagesLinks,
+                            links: widget.links,
+                            titles: widget.titles)));
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -251,13 +259,13 @@ class _HomePageContentState extends State<HomePageContent> {
                               widget.titles[index],
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.orange[900],
+                                  color: Colors.white,
                                   fontSize: 20),
                             ),
                           ),
                         ),
                         // SizedBox(
-                        //   height: 15,
+                        // height: 15,
                         // ),
                         // Text(
                         //   widget.links[index],
@@ -284,7 +292,7 @@ class _HomePageContentState extends State<HomePageContent> {
 
 class SomeListView extends StatelessWidget {
   final String result;
-  const SomeListView({Key key, @required this.result}) : super(key: key);
+  const SomeListView({Key? key, required this.result}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

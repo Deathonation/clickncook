@@ -1,14 +1,13 @@
 // import 'package:email_password_login/screens/home_screen.dart';
 // import 'package:email_password_login/screens/registration_screen.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
-import 'package:clickncook/main.dart';
 import 'package:clickncook/screens/home_screen.dart';
 import 'package:clickncook/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key key}) : super(key: key);
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -36,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
         controller: emailController,
         keyboardType: TextInputType.emailAddress,
         validator: (value) {
-          if (value.isEmpty) {
+          if (value!.isEmpty) {
             return ("Please Enter Your Email");
           }
           // reg expression for email validation
@@ -47,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
           return null;
         },
         onSaved: (value) {
-          emailController.text = value;
+          emailController.text = value!;
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -66,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
         obscureText: true,
         validator: (value) {
           RegExp regex = new RegExp(r'^.{6,}$');
-          if (value.isEmpty) {
+          if (value!.isEmpty) {
             return ("Password is required for login");
           }
           if (!regex.hasMatch(value)) {
@@ -74,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         },
         onSaved: (value) {
-          passwordController.text = value;
+          passwordController.text = value!;
         },
         textInputAction: TextInputAction.done,
         decoration: InputDecoration(
@@ -94,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           minWidth: MediaQuery.of(context).size.width,
           onPressed: () {
-            Navigator.push(context,
+            Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => new HomePage()));
             // signIn(emailController.text, passwordController.text);
           },

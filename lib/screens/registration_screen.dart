@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 
 class RegistrationScreen extends StatefulWidget {
-  const RegistrationScreen({Key key}) : super(key: key);
+  const RegistrationScreen({Key? key}) : super(key: key);
 
   @override
   _RegistrationScreenState createState() => _RegistrationScreenState();
@@ -36,7 +36,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         keyboardType: TextInputType.name,
         validator: (value) {
           RegExp regex = new RegExp(r'^.{3,}$');
-          if (value.isEmpty) {
+          if (value!.isEmpty) {
             return ("First Name cannot be Empty");
           }
           if (!regex.hasMatch(value)) {
@@ -45,7 +45,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           return null;
         },
         onSaved: (value) {
-          firstNameEditingController.text = value;
+          firstNameEditingController.text = value!;
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -63,13 +63,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         controller: secondNameEditingController,
         keyboardType: TextInputType.name,
         validator: (value) {
-          if (value.isEmpty) {
+          if (value!.isEmpty) {
             return ("Second Name cannot be Empty");
           }
           return null;
         },
         onSaved: (value) {
-          secondNameEditingController.text = value;
+          secondNameEditingController.text = value!;
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -87,7 +87,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         controller: emailEditingController,
         keyboardType: TextInputType.emailAddress,
         validator: (value) {
-          if (value.isEmpty) {
+          if (value!.isEmpty) {
             return ("Please Enter Your Email");
           }
           // reg expression for email validation
@@ -98,7 +98,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           return null;
         },
         onSaved: (value) {
-          firstNameEditingController.text = value;
+          firstNameEditingController.text = value!;
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -117,7 +117,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         obscureText: true,
         validator: (value) {
           RegExp regex = new RegExp(r'^.{6,}$');
-          if (value.isEmpty) {
+          if (value!.isEmpty) {
             return ("Password is required for login");
           }
           if (!regex.hasMatch(value)) {
@@ -125,7 +125,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           }
         },
         onSaved: (value) {
-          firstNameEditingController.text = value;
+          firstNameEditingController.text = value!;
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -150,7 +150,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           return null;
         },
         onSaved: (value) {
-          confirmPasswordEditingController.text = value;
+          confirmPasswordEditingController.text = value!;
         },
         textInputAction: TextInputAction.done,
         decoration: InputDecoration(
