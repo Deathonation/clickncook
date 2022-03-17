@@ -150,13 +150,13 @@ class _HomePageState extends State<HomePage> {
                     child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: Colors.lightGreenAccent),
+                          color: Colors.redAccent),
                       height: 40,
                       // color: Colors.lightGreenAccent,
                       child: IconButton(
                           icon: Icon(
                             Icons.search_outlined,
-                            color: Colors.black45,
+                            color: Colors.white70,
                             size: 28,
                           ),
                           onPressed: () {
