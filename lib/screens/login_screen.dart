@@ -1,7 +1,6 @@
 // import 'package:email_password_login/screens/home_screen.dart';
 // import 'package:email_password_login/screens/registration_screen.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
-import 'package:clickncook/main.dart';
 import 'package:clickncook/screens/home_screen.dart';
 import 'package:clickncook/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
@@ -64,6 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
         autofocus: false,
         controller: passwordController,
         obscureText: true,
+        // ignore: missing_return
         validator: (value) {
           RegExp regex = new RegExp(r'^.{6,}$');
           if (value.isEmpty) {
@@ -94,8 +94,12 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           minWidth: MediaQuery.of(context).size.width,
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => new HomePage()));
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => new HomePage(
+                          searchtext: null,
+                        )));
             // signIn(emailController.text, passwordController.text);
           },
           child: Text(
@@ -124,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 200,
                         width: 200,
                         child: Image.asset(
-                          "assets/images/logo.png",
+                          "assets/images/ClickNCookLogo.png",
                           fit: BoxFit.contain,
                         )),
                     SizedBox(height: 45),

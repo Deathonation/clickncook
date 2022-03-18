@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:html/dom.dart' as dom;
 import 'package:url_launcher/url_launcher.dart';
-
 import 'package:clickncook/pickImage.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key key}) : super(key: key);
+  HomePage({Key key, @required this.searchtext}) : super(key: key);
+  final String searchtext;
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -22,16 +21,18 @@ class _HomePageState extends State<HomePage> {
   int _page = 0;
   String result = "";
   Future<String> ans;
+
   void getData(str) async {
     String value = str;
-    final URL = 'https://www.indianhealthyrecipes.com/?s=$value';
-    final response = await http.get(URL);
+    final url = 'https://www.indianhealthyrecipes.com/?s=$value';
+    final response = await http.get(Uri.parse(url));
     dom.Document document = parser.parse(response.body);
     setState(() {
       final title = document.getElementsByClassName('entry-header');
       titles =
           title.map((e) => e.getElementsByTagName("a")[0].innerHtml).toList();
       print(titles[0]);
+
       final link = document.getElementsByClassName(
           'authority-featured-image authority-image-aligncenter');
       links = link
@@ -83,7 +84,12 @@ class _HomePageState extends State<HomePage> {
   Widget bodyFunction() {
     switch (_page) {
       case 0:
-        return Center(child: Text("HomePage"));
+        return HomePageContent(
+          result: result,
+          imagesLinks: imagesLinks,
+          links: links,
+          titles: titles,
+        );
 
         break;
       case 1:
@@ -174,15 +180,19 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: SafeArea(
-        child: titles == null
-            ? Center(
-                child: CircleAvatar(
-                  radius: 30.0,
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.red,
-                ),
-              )
-            : bodyFunction(),
+        child: widget.searchtext != null
+            ? textController.text = widget.searchtext
+            : titles == null
+                ? Center(
+                    child: Container(
+                      color: Colors.transparent,
+                      child: CircularProgressIndicator(
+                        // value: textController.value,
+                        semanticsLabel: 'Linear progress indicator',
+                      ),
+                    ),
+                  )
+                : bodyFunction(),
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () => Navigator.push(context,

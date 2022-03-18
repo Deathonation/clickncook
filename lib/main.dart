@@ -29,7 +29,12 @@ class _MyAppState extends State<MyApp> {
       // initialRoute: MyRoutes.searchBarroute,
       routes: {
         "/": (context) => new LoginScreen(),
-        MyRoutes.homepageroute: (context) => HomePage(),
+        "/home": (context) => new HomePage(
+              searchtext: null,
+            ),
+        MyRoutes.homepageroute: (context) => HomePage(
+              searchtext: null,
+            ),
         // MyRoutes.loginRoute: (context) => LoginPage(),
       },
     );
