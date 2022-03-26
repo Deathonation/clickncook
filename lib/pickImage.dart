@@ -16,7 +16,7 @@ class _ImageSearchState extends State<ImageSearch> {
   File _image;
   List _outputs;
   bool _loading = false;
-  String passOutput = "";
+  String passOutput;
 
   @override
   void initState() {

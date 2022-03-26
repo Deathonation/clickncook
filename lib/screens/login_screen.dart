@@ -111,11 +111,11 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.amber[50],
       body: Center(
         child: SingleChildScrollView(
           child: Container(
-            color: Colors.white,
+            color: Colors.amber[50],
             child: Padding(
               padding: const EdgeInsets.all(36.0),
               child: Form(
@@ -125,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(
-                        height: 200,
+                        height: 150,
                         width: 200,
                         child: Image.asset(
                           "assets/images/ClickNCookLogo.png",
