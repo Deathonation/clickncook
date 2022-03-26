@@ -18,6 +18,7 @@ class _HomePageState extends State<HomePage> {
   List<String> links;
   List<String> imagesLinks;
   final textController = TextEditingController();
+
   int _page = 0;
   String result = "";
   Future<String> ans;
@@ -31,14 +32,14 @@ class _HomePageState extends State<HomePage> {
       final title = document.getElementsByClassName('entry-header');
       titles =
           title.map((e) => e.getElementsByTagName("a")[0].innerHtml).toList();
-      print(titles[0]);
+      print(titles.isEmpty ? null : titles[0]);
 
       final link = document.getElementsByClassName(
           'authority-featured-image authority-image-aligncenter');
       links = link
           .map((e) => e.getElementsByTagName("a")[0].attributes['href'])
           .toList();
-      print(links[0]);
+      // print(links[0]);
 
       final images = document.getElementsByClassName('entry-image-link');
       imagesLinks = images
@@ -76,7 +77,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     setState(() {
-      getData(textController.text);
+      getData(textController.text.trim());
       print(result);
     });
   }
@@ -110,23 +111,28 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text(
-          "ClickNCook",
-          style: TextStyle(fontSize: 29),
+        elevation: 0,
+        backgroundColor: Colors.grey,
+        title: GestureDetector(
+          onTap: () {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => new HomePage(searchtext: null)));
+          },
+          child: Center(
+            child: Text(
+              "ClickNCook",
+              style: TextStyle(
+                  fontSize: 35,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w300),
+            ),
+          ),
         ),
-        actions: [
-          // Padding(
-          //   padding: EdgeInsets.only(right: 20.0),
-          //   child: IconButton(
-          //       icon: Icon(Icons.search),
-          //       onPressed: () async {
-          //         showSearch(context: context, delegate: DataSearch());
-          //       }),
-          // )
-        ],
+        actions: [Image.asset("assets/images/ClickNCookLogo.png")],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(50.0),
+          preferredSize: Size.fromHeight(40.0),
           child: Align(
             alignment: Alignment.bottomLeft,
             child: Row(
@@ -134,20 +140,32 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   width: 300,
                   height: 40,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: "Searh Dishes",
-                      fillColor: Colors.white,
-                      filled: true,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.amber[50],
+                        ),
+                        child: TextField(
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "Searh Dishes",
+                              filled: true,
+                              contentPadding:
+                                  EdgeInsets.only(left: 12, bottom: 5)),
+                          controller: textController,
+                          textAlign: TextAlign.start,
+                          onSubmitted: (String x) {
+                            setState(() {
+                              getData(textController.text.trim());
+                              _page = 1;
+                            });
+                          },
+                        ),
+                      ),
                     ),
-                    controller: textController,
-                    textAlign: TextAlign.start,
-                    onSubmitted: (String x) {
-                      setState(() {
-                        getData(textController.text);
-                        _page = 1;
-                      });
-                    },
                   ),
                 ),
                 Center(
@@ -158,15 +176,14 @@ class _HomePageState extends State<HomePage> {
                           borderRadius: BorderRadius.circular(5),
                           color: Colors.redAccent),
                       height: 40,
-                      // color: Colors.lightGreenAccent,
                       child: IconButton(
                           icon: Icon(
                             Icons.search_outlined,
-                            color: Colors.white70,
+                            color: Colors.white,
                             size: 28,
                           ),
                           onPressed: () {
-                            getData(textController.text);
+                            getData(textController.text.trim());
                             setState(() {
                               _page = 1;
                             });
@@ -180,19 +197,14 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: SafeArea(
-        child: widget.searchtext != null
-            ? textController.text = widget.searchtext
-            : titles == null
-                ? Center(
-                    child: Container(
-                      color: Colors.transparent,
-                      child: CircularProgressIndicator(
-                        // value: textController.value,
-                        semanticsLabel: 'Linear progress indicator',
-                      ),
-                    ),
-                  )
-                : bodyFunction(),
+        child: titles == null
+            ? Center(
+                child: Container(
+                  color: Colors.amber[50],
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            : bodyFunction(),
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () => Navigator.push(context,
@@ -228,64 +240,65 @@ class HomePageContent extends StatefulWidget {
 class _HomePageContentState extends State<HomePageContent> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: ListView.builder(
-          itemCount: widget.links.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () async {
-                dynamic url = widget.links[index];
-                print(widget.links[index]);
-                // print(!await canLaunch(url));
-                if (!await canLaunch(url)) {
-                  print("inside");
-                  await launch(url);
-                } else
-                  print("ERROR launching url");
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  child: Container(
-                    color: Colors.black38,
-                    child: Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 12.0, top: 5),
-                            child: Text(
-                              widget.titles[index],
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.orange[900],
-                                  fontSize: 20),
+    return Container(
+      color: Colors.grey,
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ListView.builder(
+            itemCount: widget.links.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () async {
+                  dynamic url = widget.links[index];
+                  print(widget.links[index]);
+                  // print(!await canLaunch(url));
+                  if (!await canLaunch(url)) {
+                    print("inside");
+                    await launch(url);
+                  } else
+                    print("ERROR launching url");
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: Container(
+                      color: Colors.transparent,
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 12.0, top: 10),
+                              child: Text(
+                                widget.titles[index],
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.redAccent,
+                                    fontSize: 20),
+                              ),
                             ),
                           ),
-                        ),
-                        // SizedBox(
-                        //   height: 15,
-                        // ),
-                        // Text(
-                        //   widget.links[index],
-                        // ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Image.network(widget.imagesLinks[index]),
-                        )
-                      ],
+                          SizedBox(height: 4),
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Image.network(widget.imagesLinks[index]),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
