@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "853079639663",
+    "project_id": "cncauthentication",
+    "storage_bucket": "cncauthentication.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:853079639663:android:43de91263ab20efab72f9a",
+        "android_client_info": {
+          "package_name": "com.example.clickncook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "853079639663-03gha9c6hr7t9se6tvs2dsp5ccd7i2d1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.clickncook",
+            "certificate_hash": "e564909281a277a1b78367d086ed8db3cca34aa6"
+          }
+        },
+        {
+          "client_id": "853079639663-a3cs99dapkndev9ik8fiucguohc9rea4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvbgnL7TVdF2zc2N4jFuGqpMeB7kA76js"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "853079639663-a3cs99dapkndev9ik8fiucguohc9rea4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
