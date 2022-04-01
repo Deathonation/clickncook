@@ -2,7 +2,9 @@
 // import 'package:email_password_login/model/user_model.dart';
 // import 'package:email_password_login/screens/home_screen.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
+import 'package:clickncook/services/auth_services.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -29,6 +31,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthServices>(context);
     //first name field
     final firstNameField = TextFormField(
         autofocus: false,
@@ -170,8 +173,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       child: MaterialButton(
           padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           minWidth: MediaQuery.of(context).size.width,
-          onPressed: () {
+          onPressed: () async {
             // signUp(emailEditingController.text, passwordEditingController.text);
+            await authService.createUserWithEmailAndPassword(
+                emailEditingController.text, passwordEditingController.text);
+
+            Navigator.pop(context);
           },
           child: Text(
             "SignUp",

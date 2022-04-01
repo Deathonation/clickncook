@@ -1,7 +1,9 @@
+import 'package:clickncook/services/auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:html/dom.dart' as dom;
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:clickncook/pickImage.dart';
 
@@ -109,6 +111,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthServices>(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -121,16 +124,38 @@ class _HomePageState extends State<HomePage> {
                     builder: (context) => new HomePage(searchtext: null)));
           },
           child: Center(
-            child: Text(
-              "ClickNCook",
-              style: TextStyle(
-                  fontSize: 35,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w300),
+            child: Row(
+              children: [
+                Container(
+                  height: 60,
+                  width: 60,
+                  child: Image.asset(
+                    "assets/images/ClickNCookLogo.png",
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "ClickNCook",
+                  style: TextStyle(
+                      fontSize: 35,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w300),
+                ),
+              ],
             ),
           ),
         ),
-        actions: [Image.asset("assets/images/ClickNCookLogo.png")],
+        actions: [
+          Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: IconButton(
+                  icon: Icon(Icons.logout),
+                  onPressed: () async {
+                    await authService.signOut();
+                  }))
+        ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(40.0),
           child: Align(

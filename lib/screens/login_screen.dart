@@ -1,9 +1,8 @@
-// import 'package:email_password_login/screens/home_screen.dart';
-// import 'package:email_password_login/screens/registration_screen.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:clickncook/screens/home_screen.dart';
 import 'package:clickncook/screens/registration_screen.dart';
+import 'package:clickncook/services/auth_services.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,14 +20,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
 
-  // firebase
-  // final _auth = FirebaseAuth.instance;
-
-  // string for displaying the error Message
-  // String? errorMessage;
-
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthServices>(context);
     //email field
     final emailField = TextFormField(
         autofocus: false,
@@ -94,13 +88,15 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           minWidth: MediaQuery.of(context).size.width,
           onPressed: () {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => new HomePage(
-                          searchtext: null,
-                        )));
+            // Navigator.pushReplacement(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) => new HomePage(
+            //               searchtext: null,
+            //             )));
             // signIn(emailController.text, passwordController.text);
+            authService.signInWithEmailAndPassword(
+                emailController.text, passwordController.text);
           },
           child: Text(
             "Login",
