@@ -1,4 +1,6 @@
 import 'package:clickncook/services/auth_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
@@ -48,21 +50,6 @@ class _HomePageState extends State<HomePage> {
           .map((e) => e.getElementsByTagName("img")[0].attributes['src'])
           .toList();
     });
-
-    // print(URL);
-    // final response = await http.get(Uri.parse(URL));
-    // final body = response.body;
-    // final html = parse(body);
-    // setState(() {
-    //   result = html.querySelector('.entry-title-link').text;
-    //   final image = html.querySelectorAll('.entry-title-link');
-    //   print(image);
-    //   print('Title: $result');
-    // });
-
-    // value = "pav bhaji";
-    // value = value.replaceAll(' ', '-');
-    //
   }
   // imagepicker code
 
@@ -112,10 +99,11 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthServices>(context);
+
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.grey,
+        elevation: 10,
+        backgroundColor: Colors.grey.withOpacity(0.6),
         title: GestureDetector(
           onTap: () {
             Navigator.pushReplacement(
@@ -225,7 +213,6 @@ class _HomePageState extends State<HomePage> {
         child: titles == null
             ? Center(
                 child: Container(
-                  color: Colors.amber[50],
                   child: CircularProgressIndicator(),
                 ),
               )
@@ -266,64 +253,61 @@ class _HomePageContentState extends State<HomePageContent> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey,
+      color: Colors.grey.withOpacity(0.6),
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: ListView.builder(
-            itemCount: widget.links.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () async {
-                  dynamic url = widget.links[index];
-                  print(widget.links[index]);
-                  // print(!await canLaunch(url));
-                  if (!await canLaunch(url)) {
-                    print("inside");
-                    await launch(url);
-                  } else
-                    print("ERROR launching url");
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: Container(
-                      color: Colors.transparent,
-                      child: Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 12.0, top: 10),
-                              child: Text(
-                                widget.titles[index],
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.redAccent,
-                                    fontSize: 20),
-                              ),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ListView.builder(
+          itemCount: widget.links.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () async {
+                dynamic url = widget.links[index];
+                print(widget.links[index]);
+                // print(!await canLaunch(url));
+                if (!await canLaunch(url)) {
+                  print("inside");
+                  await launch(url);
+                } else
+                  print("ERROR launching url");
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Card(
+                  color: Colors.white.withOpacity(0.6),
+                  // shape: RoundedRectangleBorder(
+                  //   borderRadius: BorderRadius.circular(15.0),
+                  // ),
+                  child: Container(
+                    color: Colors.transparent.withOpacity(0.3),
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 12.0, top: 10),
+                            child: Text(
+                              widget.titles[index],
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.redAccent,
+                                  fontSize: 20),
                             ),
                           ),
-                          SizedBox(height: 4),
-                          Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Image.network(widget.imagesLinks[index]),
-                          )
-                        ],
-                      ),
+                        ),
+                        SizedBox(height: 4),
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Image.network(widget.imagesLinks[index]),
+                        )
+                      ],
                     ),
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

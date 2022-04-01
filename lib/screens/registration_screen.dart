@@ -52,9 +52,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.account_circle),
+          prefixIcon: Icon(
+            Icons.account_circle,
+            color: Colors.black,
+          ),
           contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "First Name",
+          hintStyle: TextStyle(fontWeight: FontWeight.w700),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -76,9 +80,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.account_circle),
+          prefixIcon: Icon(
+            Icons.account_circle,
+            color: Colors.black,
+          ),
           contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Second Name",
+          hintStyle: TextStyle(fontWeight: FontWeight.w700),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -105,9 +113,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.mail),
+          prefixIcon: Icon(
+            Icons.mail,
+            color: Colors.black,
+          ),
           contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Email",
+          hintStyle: TextStyle(fontWeight: FontWeight.w700),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -118,6 +130,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         autofocus: false,
         controller: passwordEditingController,
         obscureText: true,
+        // ignore: missing_return
         validator: (value) {
           RegExp regex = new RegExp(r'^.{6,}$');
           if (value.isEmpty) {
@@ -132,9 +145,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.vpn_key),
+          prefixIcon: Icon(
+            Icons.vpn_key,
+            color: Colors.black,
+          ),
           contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Password",
+          hintStyle: TextStyle(fontWeight: FontWeight.w700),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -157,9 +174,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         },
         textInputAction: TextInputAction.done,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.vpn_key),
+          prefixIcon: Icon(
+            Icons.vpn_key,
+            color: Colors.black,
+          ),
           contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Confirm Password",
+          hintStyle: TextStyle(fontWeight: FontWeight.w700),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -188,51 +209,57 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           )),
     );
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.red),
-          onPressed: () {
-            // passing this to our root
-            Navigator.of(context).pop();
-          },
+    return Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage("assets/images/loginbgfood.jpg"),
+              fit: BoxFit.cover)),
+      child: Scaffold(
+        backgroundColor: Colors.amber[100].withOpacity(0.5),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.red),
+            onPressed: () {
+              // passing this to our root
+              Navigator.of(context).pop();
+            },
+          ),
         ),
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(36.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                        height: 180,
-                        child: Image.asset(
-                          "assets/images/logo.png",
-                          fit: BoxFit.contain,
-                        )),
-                    SizedBox(height: 20),
-                    firstNameField,
-                    SizedBox(height: 20),
-                    secondNameField,
-                    SizedBox(height: 20),
-                    emailField,
-                    SizedBox(height: 20),
-                    passwordField,
-                    SizedBox(height: 20),
-                    confirmPasswordField,
-                    SizedBox(height: 20),
-                    signUpButton,
-                    SizedBox(height: 15),
-                  ],
+        body: Center(
+          child: SingleChildScrollView(
+            child: Container(
+              color: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.all(36.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                          height: 180,
+                          child: Image.asset(
+                            "assets/images/ClickNCookLogo.png",
+                            fit: BoxFit.cover,
+                          )),
+                      SizedBox(height: 20),
+                      firstNameField,
+                      SizedBox(height: 20),
+                      secondNameField,
+                      SizedBox(height: 20),
+                      emailField,
+                      SizedBox(height: 20),
+                      passwordField,
+                      SizedBox(height: 20),
+                      confirmPasswordField,
+                      SizedBox(height: 20),
+                      signUpButton,
+                      SizedBox(height: 15),
+                    ],
+                  ),
                 ),
               ),
             ),
