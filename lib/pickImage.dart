@@ -30,21 +30,35 @@ class _ImageSearchState extends State<ImageSearch> {
     });
   }
 
+  // loadModel() async {
+  //   await Tflite.loadModel(
+  //       model: "assets/model.tflite",
+  //       labels: "assets/labels.txt",
+  //       numThreads: 1);
+  // }
+
   loadModel() async {
     await Tflite.loadModel(
-        model: "assets/model.tflite",
-        labels: "assets/labels.txt",
+        model: "assets/mobilenet1/mobilenetv2Model.h5",
+        labels: "assets/mobilenet1/labels.txt",
         numThreads: 1);
   }
 
+  // loadModel() async {
+  //   await Tflite.loadModel(
+  //       model: "assets/resnet/model.tflite",
+  //       labels: "assets/resnet/labelsResnet.txt",
+  //       numThreads: 1);
+  // }
+
   classifyImage(File image) async {
     var output = await Tflite.runModelOnImage(
-        path: image.path,
-        imageMean: 0.0,
-        imageStd: 255.0,
-        numResults: 2,
-        threshold: 0.2,
-        asynch: true);
+      path: image.path,
+      imageMean: 127.5,
+      imageStd: 127.5,
+      numResults: 2,
+      threshold: 0.2,
+    );
 
     setState(() {
       _loading = false;
@@ -92,7 +106,17 @@ class _ImageSearchState extends State<ImageSearch> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            _image == null ? Container() : Image.file(_image),
+                            _image == null
+                                ? Container(
+                                    child: Text("Error no image"),
+                                  )
+                                : Container(
+                                    height: 300,
+                                    width: 300,
+                                    child: Image.file(
+                                      _image,
+                                    ),
+                                  ),
                             SizedBox(
                               height: 20,
                             ),

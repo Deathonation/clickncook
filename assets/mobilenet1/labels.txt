@@ -1,0 +1,33 @@
+Biryani
+Chole Bhature
+Dabeli
+Dal
+Dosa
+Kathi
+Kofta
+Naan
+Pakora
+Paneer Tikka
+Pani Puri
+Pav Bhaji
+Vadapav
+burger
+butter_naan
+chai
+chapati
+chole_bhature
+dal_makhani
+dhokla
+fried_rice
+idli
+jalebi
+kaathi_rolls
+kadai_paneer
+kulfi
+masala_dosa
+momos
+paani_puri
+pakode
+pav_bhaji
+pizza
+samosa

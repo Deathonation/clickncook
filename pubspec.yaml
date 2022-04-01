@@ -62,6 +62,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/resnet/labelsResnet.txt
+    - assets/resnet/model.tflite
     - assets/labels.txt
     - assets/model.tflite
   #   - images/a_dot_ham.jpeg
