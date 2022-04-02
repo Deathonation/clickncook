@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "853079639663",
+    "firebase_url": "https://cncauthentication-default-rtdb.asia-southeast1.firebasedatabase.app/",
     "project_id": "cncauthentication",
     "storage_bucket": "cncauthentication.appspot.com"
   },
@@ -37,6 +38,14 @@
             {
               "client_id": "853079639663-a3cs99dapkndev9ik8fiucguohc9rea4.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "853079639663-gefaav2358gkgs0d03m96uu3nmgfg692.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.clickncook",
+                "app_store_id": "12345678910"
+              }
             }
           ]
         }
