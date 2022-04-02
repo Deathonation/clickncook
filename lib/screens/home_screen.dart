@@ -1,3 +1,4 @@
+import 'package:clickncook/screens/recent_searches.dart';
 import 'package:clickncook/services/auth_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -67,7 +68,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     setState(() {
-      getData(textController.text.trim());
+      if (widget.searchtext == null) {
+        getData(textController.text.trim());
+      } else {
+        getData(widget.searchtext);
+      }
+
       print(result);
     });
   }
@@ -163,8 +169,9 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
               icon: Icon(Icons.history),
-              onPressed: () async {
-                await authService.signOut();
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => RecentSearch()));
               }),
           IconButton(
               icon: Icon(Icons.logout),
