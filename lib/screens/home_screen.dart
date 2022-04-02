@@ -1,3 +1,4 @@
+import 'package:clickncook/end_drawer.dart';
 import 'package:clickncook/screens/recent_searches.dart';
 import 'package:clickncook/services/auth_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -257,6 +258,7 @@ class _HomePageState extends State<HomePage> {
               )
             : bodyFunction(),
       ),
+      endDrawer: MyEndDrawer(),
       floatingActionButton: FloatingActionButton(
           onPressed: () => Navigator.push(context,
               MaterialPageRoute(builder: (context) => const ImageSearch())),
