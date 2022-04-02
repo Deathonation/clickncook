@@ -1,4 +1,5 @@
 import 'package:clickncook/services/auth_services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -99,6 +100,30 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthServices>(context);
+    final _auth = FirebaseAuth.instance;
+    String userEmail = _auth.currentUser.email;
+
+    // void getUserEmail() async {
+    //   User user = await _auth.currentUser.email;
+    // }
+
+    void addData(str) {
+      Map<String, dynamic> demodata = {"dishname": str};
+
+      CollectionReference collectionReference =
+          FirebaseFirestore.instance.collection(userEmail);
+
+      collectionReference
+          .doc("recentsearch")
+          .collection("recentSearches")
+          .add(demodata);
+      // collectionReference.snapshots().listen((event) {
+      //   setState(() {
+      //     final data = event.docs[0].data();
+      //     print(data);
+      //   });
+      // });
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -122,12 +147,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 SizedBox(
-                  width: 10,
+                  width: 5,
                 ),
                 Text(
                   "ClickNCook",
                   style: TextStyle(
-                      fontSize: 35,
+                      fontSize: 30,
                       color: Colors.white,
                       fontWeight: FontWeight.w300),
                 ),
@@ -136,13 +161,16 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         actions: [
-          Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: IconButton(
-                  icon: Icon(Icons.logout),
-                  onPressed: () async {
-                    await authService.signOut();
-                  }))
+          IconButton(
+              icon: Icon(Icons.history),
+              onPressed: () async {
+                await authService.signOut();
+              }),
+          IconButton(
+              icon: Icon(Icons.logout),
+              onPressed: () async {
+                await authService.signOut();
+              })
         ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(40.0),
@@ -171,8 +199,10 @@ class _HomePageState extends State<HomePage> {
                           controller: textController,
                           textAlign: TextAlign.start,
                           onSubmitted: (String x) {
+                            final String str = textController.text.trim();
+                            getData(str);
+                            addData(str);
                             setState(() {
-                              getData(textController.text.trim());
                               _page = 1;
                             });
                           },
@@ -196,7 +226,9 @@ class _HomePageState extends State<HomePage> {
                             size: 28,
                           ),
                           onPressed: () {
-                            getData(textController.text.trim());
+                            final String str = textController.text.trim();
+                            getData(str);
+                            addData(str);
                             setState(() {
                               _page = 1;
                             });

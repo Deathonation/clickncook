@@ -3,6 +3,7 @@
 // import 'package:email_password_login/screens/home_screen.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:clickncook/services/auth_services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
@@ -186,6 +187,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           ),
         ));
 
+    void addInfo() {
+      Map<String, dynamic> infoData = {
+        "FirstName": firstNameEditingController.text.trim(),
+        "LastName": secondNameEditingController.text.trim()
+      };
+      CollectionReference collectionReference =
+          FirebaseFirestore.instance.collection(emailEditingController.text);
+      collectionReference.doc("name").collection("Name").add(infoData);
+    }
+
     //signup button
     final signUpButton = Material(
       elevation: 5,
@@ -198,6 +209,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             // signUp(emailEditingController.text, passwordEditingController.text);
             await authService.createUserWithEmailAndPassword(
                 emailEditingController.text, passwordEditingController.text);
+
+            addInfo();
 
             Navigator.pop(context);
           },
