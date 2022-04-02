@@ -1,6 +1,6 @@
 import 'package:clickncook/services/auth_services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
@@ -10,8 +10,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:clickncook/pickImage.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, @required this.searchtext}) : super(key: key);
+  HomePage({Key key, @required this.searchtext, this.app}) : super(key: key);
   final String searchtext;
+  final Firebase app;
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -22,6 +23,8 @@ class _HomePageState extends State<HomePage> {
   List<String> links;
   List<String> imagesLinks;
   final textController = TextEditingController();
+
+  final referenceDatabase = FirebaseDatabase.instance;
 
   int _page = 0;
   String result = "";
@@ -99,6 +102,15 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthServices>(context);
+    final referenceDatabase = FirebaseDatabase.instance;
+    DatabaseReference ref = referenceDatabase.reference();
+
+    void postRecentSearch(str) async {
+      print(str);
+      print("in post");
+      ref.child("recentsearch").set({"1": str});
+      print("done");
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -196,7 +208,10 @@ class _HomePageState extends State<HomePage> {
                             size: 28,
                           ),
                           onPressed: () {
-                            getData(textController.text.trim());
+                            final String str = textController.text.trim();
+                            getData(str);
+                            postRecentSearch(str);
+                            print(str);
                             setState(() {
                               _page = 1;
                             });
@@ -264,7 +279,7 @@ class _HomePageContentState extends State<HomePageContent> {
             return GestureDetector(
               onTap: () async {
                 dynamic url = widget.links[index];
-                print(widget.links[index]);
+                print(widget.links[0]);
                 // print(!await canLaunch(url));
                 if (!await canLaunch(url)) {
                   print("inside");
