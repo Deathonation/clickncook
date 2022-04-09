@@ -39,10 +39,17 @@ class _ImageSearchState extends State<ImageSearch> {
 
   loadModel() async {
     await Tflite.loadModel(
-        model: "assets/mobilenet1/mobilenet1_1.tflite",
+        model: "assets/mobilenet1/converted_model.tflite",
         labels: "assets/mobilenet1/labels.txt",
         numThreads: 1);
   }
+
+  // loadModel() async {
+  //   await Tflite.loadModel(
+  //       model: "assets/nishantmodel/model.tflite",
+  //       labels: "assets/nishantmodel/labels.txt",
+  //       numThreads: 1);
+  // }
 
   // loadModel() async {
   //   await Tflite.loadModel(

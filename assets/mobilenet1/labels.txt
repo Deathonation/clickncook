@@ -12,22 +12,22 @@ Pani Puri
 Pav Bhaji
 Vadapav
 burger
-butter_naan
+butter naan
 chai
 chapati
-chole_bhature
-dal_makhani
+chole bhature
+dal makhani
 dhokla
 fried_rice
 idli
 jalebi
 kaathi_rolls
-kadai_paneer
+kadai paneer
 kulfi
-masala_dosa
+masala dosa
 momos
-paani_puri
+paani puri
 pakode
-pav_bhaji
+pav bhaji
 pizza
 samosa

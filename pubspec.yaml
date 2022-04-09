@@ -62,6 +62,10 @@ flutter:
     - assets/resnet/model.tflite
     - assets/labels.txt
     - assets/model.tflite
+    - assets\mobilenet1\mobilenet2_1.tflite
+    - assets\mobilenet1\labels.txt
+    - assets/nishantmodel/model.tflite
+    - assets/nishantmodel/labels.txt
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
