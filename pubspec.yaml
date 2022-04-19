@@ -39,6 +39,7 @@ dependencies:
   flutter_staggered_animations: ^0.1.2
   url_launcher: ^6.0.4
   url_launcher_web: ^2.0.6
+  firebase_storage: ^8.1.0
 
 dev_dependencies:
   flutter_test:
