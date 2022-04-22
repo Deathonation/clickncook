@@ -81,12 +81,6 @@ class _ImageSearchState extends State<ImageSearch> {
   //   });
   // }
 
-  @override
-  void dispose() {
-    Tflite.close();
-    super.dispose();
-  }
-
   final ImagePicker imgPicker = new ImagePicker();
   QuerySnapshot snapshot;
   Future getImage() async {
@@ -145,9 +139,9 @@ class _ImageSearchState extends State<ImageSearch> {
     print(imgLink);
 
     final response = await http.post(
-        Uri.parse("http://192.168.0.104:5000/modelapi"),
-        body: imgLinkJson);
-    print(response.body);
+        Uri.parse("https://f19f-203-194-99-28.in.ngrok.io/modelapi/"),
+        body: {"img_link": imgLink});
+    print(response.body.replaceAll('"', ""));
   }
 
   @override
