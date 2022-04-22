@@ -1,4 +1,6 @@
-import 'dart:math';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,13 +28,13 @@ class _ImageSearchState extends State<ImageSearch> {
   @override
   void initState() {
     super.initState();
-    _loading = true;
+    // _loading = true;
 
-    loadModel().then((value) {
-      setState(() {
-        _loading = false;
-      });
+    // loadModel().then((value) {
+    setState(() {
+      _loading = false;
     });
+    // });
   }
 
   // loadModel() async {
@@ -42,12 +44,12 @@ class _ImageSearchState extends State<ImageSearch> {
   //       numThreads: 1);
   // }
 
-  loadModel() async {
-    await Tflite.loadModel(
-        model: "assets/mobilenet1/converted_model.tflite",
-        labels: "assets/mobilenet1/labels.txt",
-        numThreads: 1);
-  }
+  // loadModel() async {
+  //   await Tflite.loadModel(
+  //       model: "assets/mobilenet1/converted_model.tflite",
+  //       labels: "assets/mobilenet1/labels.txt",
+  //       numThreads: 1);
+  // }
 
   // loadModel() async {
   //   await Tflite.loadModel(
@@ -63,37 +65,20 @@ class _ImageSearchState extends State<ImageSearch> {
   //       numThreads: 1);
   // }
 
-  classifyImage(File image) async {
-    var output = await Tflite.runModelOnImage(
-      path: image.path,
-      imageMean: 127.5,
-      imageStd: 127.5,
-      numResults: 2,
-      threshold: 0.2,
-    );
-
-    setState(() {
-      _loading = false;
-      _outputs = output;
-      passOutput = _outputs[0]['label'];
-    });
-  }
-
-  // Future classifyImage(File image) async {
-  //   int startTime = new DateTime.now().millisecondsSinceEpoch;
-  //   var recognitions = await Tflite.runModelOnImage(
+  // classifyImage(File image) async {
+  //   var output = await Tflite.runModelOnImage(
   //     path: image.path,
-  //     numResults: 6,
-  //     threshold: 0.05,
   //     imageMean: 127.5,
   //     imageStd: 127.5,
+  //     numResults: 2,
+  //     threshold: 0.2,
   //   );
+
   //   setState(() {
   //     _loading = false;
-  //     _outputs = recognitions;
+  //     _outputs = output;
+  //     passOutput = _outputs[0]['label'];
   //   });
-  //   int endTime = new DateTime.now().millisecondsSinceEpoch;
-  //   print("Inference took ${endTime - startTime}ms");
   // }
 
   @override
@@ -103,6 +88,7 @@ class _ImageSearchState extends State<ImageSearch> {
   }
 
   final ImagePicker imgPicker = new ImagePicker();
+  QuerySnapshot snapshot;
   Future getImage() async {
     // ignore: deprecated_member_use
     final _auth = FirebaseAuth.instance;
@@ -115,10 +101,10 @@ class _ImageSearchState extends State<ImageSearch> {
       return null;
     }
     setState(() {
-      _loading = true;
+      // _loading = true;
       _image = File(image.path);
     });
-    classifyImage(_image);
+    // classifyImage(_image);
     print(
         "after classify BAKA-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
     var datetime = DateTime.now();
@@ -146,12 +132,22 @@ class _ImageSearchState extends State<ImageSearch> {
     print(
         "after all BAKA-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
-    // collectionReference.snapshots().listen((event) {
-    //   setState(() {
-    //     final data = event.docs[0].data();
-    //     print(data);
-    //   });
-    // });
+    final data = await FirebaseFirestore.instance
+        .collection(userEmail)
+        .doc("imagesClick")
+        .collection("ImagesClick")
+        .get();
+    snapshot = data;
+    print(snapshot.docs.length);
+    print(snapshot.docs[snapshot.docs.length - 1].data());
+    final imgLinkJson = snapshot.docs[snapshot.docs.length - 1].data();
+    final imgLink = imgLinkJson["images"];
+    print(imgLink);
+
+    final response = await http.post(
+        Uri.parse("http://192.168.0.104:5000/modelapi"),
+        body: imgLinkJson);
+    print(response.body);
   }
 
   @override

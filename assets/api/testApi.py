@@ -1,6 +1,6 @@
 from __future__ import division, print_function
 import json
-from flask import Flask
+from flask import Flask, jsonify
 from flask_restful import Resource, Api, reqparse
 
 import json
@@ -50,16 +50,13 @@ class ModelApi(Resource):
     def post(self):
         parser.add_argument("img_link")
         args = parser.parse_args()
-        # image1 = np.array(json.loads(args["img"]), dtype=np.float32)
-        # input = image1
-        # print("img shape: ", image1.shape, image1.dtype)
         img_name = ModelApi.download_image(args["img_link"])
         img = ModelApi.prepare_image_and_predict(img_name)
         prediction = model.predict(img)
         print("Prediction", prediction)
         index = prediction.argmax()
         print(index, labels[index])
-        return labels[index], 200
+        return jsonify({"result": labels[index]})
 
     def prepare_image_and_predict(img_name):
         # imgpath = r"D:\RAJ\DMCE_sem8\Major Project\modelTraining\testing\dhokla.jpg"
@@ -69,14 +66,9 @@ class ModelApi(Resource):
         mobile = keras.applications.mobilenet_v2.preprocess_input(
             img_array_expanded_dims)
         print(mobile.shape)
-        # data = {
-        #     "img": json.dumps(mobile.tolist())
-        # }
-        # # print(json_data)
-        # output = requests.post("http://127.0.0.1:5000/modelapi/",
-        #                        data=data)
-        # print(output)
+
         return mobile
+
 
         # def prepare_image(img):
     #     # img = image.load_img(file, target_size=(224, 224))

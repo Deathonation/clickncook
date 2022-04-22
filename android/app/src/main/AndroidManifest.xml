@@ -1,8 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.clickncook">
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- This Line -->
    <application
         android:label="clickncook"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true"> <!-- This Line -->
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
