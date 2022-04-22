@@ -1,13 +1,12 @@
-import 'package:clickncook/services/auth_services.dart';
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:clickncook/screens/home_screen.dart';
-import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
 import 'package:tflite/tflite.dart';
 
 class ImageSearch extends StatefulWidget {
@@ -122,11 +121,11 @@ class _ImageSearchState extends State<ImageSearch> {
     classifyImage(_image);
     print(
         "after classify BAKA-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-
+    var datetime = DateTime.now();
     final ref = FirebaseStorage.instance
         .ref("myimages")
-        .child("userImages")
-        .child(userEmail);
+        .child(userEmail)
+        .child("$datetime");
 
     await ref.putFile(_image);
     url = await ref.getDownloadURL();
