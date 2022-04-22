@@ -56,7 +56,7 @@ class ModelApi(Resource):
         print("Prediction", prediction)
         index = prediction.argmax()
         print(index, labels[index])
-        return jsonify({"result": labels[index]})
+        return jsonify(labels[index])
 
     def prepare_image_and_predict(img_name):
         # imgpath = r"D:\RAJ\DMCE_sem8\Major Project\modelTraining\testing\dhokla.jpg"
@@ -66,7 +66,6 @@ class ModelApi(Resource):
         mobile = keras.applications.mobilenet_v2.preprocess_input(
             img_array_expanded_dims)
         print(mobile.shape)
-
         return mobile
 
 
@@ -81,4 +80,4 @@ api.add_resource(ModelApi, '/modelapi/')
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
