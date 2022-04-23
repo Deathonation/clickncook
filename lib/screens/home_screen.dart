@@ -154,14 +154,14 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 SizedBox(
-                  width: 5,
+                  width: 10,
                 ),
                 Text(
                   "ClickNCook",
                   style: TextStyle(
                       fontSize: 30,
                       color: Colors.white,
-                      fontWeight: FontWeight.w300),
+                      fontWeight: FontWeight.w500),
                 ),
               ],
             ),
@@ -181,7 +181,7 @@ class _HomePageState extends State<HomePage> {
               })
         ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(40.0),
+          preferredSize: Size.fromHeight(35.0),
           child: Align(
             alignment: Alignment.bottomLeft,
             child: Row(
@@ -190,7 +190,7 @@ class _HomePageState extends State<HomePage> {
                   width: 300,
                   height: 40,
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
+                    padding: const EdgeInsets.only(left: 8.0, bottom: 0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(5),
                       child: Container(
@@ -262,7 +262,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
           onPressed: () => Navigator.push(context,
               MaterialPageRoute(builder: (context) => const ImageSearch())),
-          backgroundColor: Colors.grey,
+          backgroundColor: Colors.redAccent,
           child: Icon(Icons.camera_alt_outlined)),
     );
   }
@@ -316,7 +316,7 @@ class _HomePageContentState extends State<HomePageContent> {
               child: Padding(
                 padding: const EdgeInsets.all(4.0),
                 child: Card(
-                  color: Colors.white.withOpacity(0.6),
+                  color: Colors.black.withOpacity(0.6),
                   // shape: RoundedRectangleBorder(
                   //   borderRadius: BorderRadius.circular(15.0),
                   // ),
@@ -332,7 +332,7 @@ class _HomePageContentState extends State<HomePageContent> {
                               widget.titles[index],
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.redAccent,
+                                  color: Colors.white,
                                   fontSize: 20),
                             ),
                           ),
