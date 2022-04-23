@@ -1,15 +1,14 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:clickncook/screens/home_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:tflite/tflite.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+
+import 'package:clickncook/screens/home_screen.dart';
 
 class ImageSearch extends StatefulWidget {
   const ImageSearch({Key key}) : super(key: key);
@@ -28,79 +27,30 @@ class _ImageSearchState extends State<ImageSearch> {
   @override
   void initState() {
     super.initState();
-    // _loading = true;
-
-    // loadModel().then((value) {
     setState(() {
       _loading = false;
     });
-    // });
   }
 
-  // loadModel() async {
-  //   await Tflite.loadModel(
-  //       model: "assets/model.tflite",
-  //       labels: "assets/labels.txt",
-  //       numThreads: 1);
-  // }
-
-  // loadModel() async {
-  //   await Tflite.loadModel(
-  //       model: "assets/mobilenet1/converted_model.tflite",
-  //       labels: "assets/mobilenet1/labels.txt",
-  //       numThreads: 1);
-  // }
-
-  // loadModel() async {
-  //   await Tflite.loadModel(
-  //       model: "assets/nishantmodel/model.tflite",
-  //       labels: "assets/nishantmodel/labels.txt",
-  //       numThreads: 1);
-  // }
-
-  // loadModel() async {
-  //   await Tflite.loadModel(
-  //       model: "assets/resnet/model.tflite",
-  //       labels: "assets/resnet/labelsResnet.txt",
-  //       numThreads: 1);
-  // }
-
-  // classifyImage(File image) async {
-  //   var output = await Tflite.runModelOnImage(
-  //     path: image.path,
-  //     imageMean: 127.5,
-  //     imageStd: 127.5,
-  //     numResults: 2,
-  //     threshold: 0.2,
-  //   );
-
-  //   setState(() {
-  //     _loading = false;
-  //     _outputs = output;
-  //     passOutput = _outputs[0]['label'];
-  //   });
-  // }
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   final ImagePicker imgPicker = new ImagePicker();
   QuerySnapshot snapshot;
-  Future getImage() async {
+  Future<String> getImage() async {
     // ignore: deprecated_member_use
+
     final _auth = FirebaseAuth.instance;
     String userEmail = _auth.currentUser.email;
 
     var image = await imgPicker.getImage(source: ImageSource.gallery);
     if (image == null) {
-      print(
-          "null image BAKA-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
       return null;
     }
-    setState(() {
-      // _loading = true;
-      _image = File(image.path);
-    });
-    // classifyImage(_image);
-    print(
-        "after classify BAKA-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+    _image = File(image.path);
+
     var datetime = DateTime.now();
     final ref = FirebaseStorage.instance
         .ref("myimages")
@@ -109,47 +59,43 @@ class _ImageSearchState extends State<ImageSearch> {
 
     await ref.putFile(_image);
     url = await ref.getDownloadURL();
-    print(
-        "after ref BAKA-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+    print(url);
 
-    Map<String, dynamic> demodata = {"images": url};
-
+    final response = await http.post(
+        Uri.parse("https://ed8d-203-194-99-28.in.ngrok.io/modelapi/"),
+        body: {"img_link": url});
+    print(response.body);
+    final prediction = response.body;
+    Map<String, dynamic> demodata = {prediction.replaceAll('"', ''): url};
     CollectionReference collectionReference =
         FirebaseFirestore.instance.collection(userEmail);
-    print(
-        "after CR BAKA-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
     collectionReference
         .doc("imagesClick")
         .collection("ImagesClick")
         .add(demodata);
 
-    print(
-        "after all BAKA-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+    // final data = await FirebaseFirestore.instance
+    //     .collection(userEmail)
+    //     .doc("imagesClick")
+    //     .collection("ImagesClick")
+    //     .get();
 
-    final data = await FirebaseFirestore.instance
-        .collection(userEmail)
-        .doc("imagesClick")
-        .collection("ImagesClick")
-        .get();
-    snapshot = data;
-    print(snapshot.docs.length);
-    print(snapshot.docs[snapshot.docs.length - 1].data());
-    final imgLinkJson = snapshot.docs[snapshot.docs.length - 1].data();
-    final imgLink = imgLinkJson["images"];
-    print(imgLink);
+    // print(data.docs.length);
+    // print(data.docs[data.docs.length - 1].data());
+    // final imgLinkJson = data.docs[data.docs.length - 1].data();
+    // // final imgLink = imgLinkJson["images"];
+    // print(imgLinkJson);
 
-    final response = await http.post(
-        Uri.parse("https://f19f-203-194-99-28.in.ngrok.io/modelapi/"),
-        body: {"img_link": imgLink});
-    print(response.body.replaceAll('"', ""));
+    // final cache = DefaultCacheManager();
+    // await cache.emptyCache();
+    setState(() {});
+    return prediction;
   }
 
   @override
   Widget build(BuildContext context) {
-    // void getUserEmail() async {
-    //   User user = await _auth.currentUser.email;
-    // }
-
+    Future<String> prediction;
     return SafeArea(
       child: Scaffold(
           body: Container(
@@ -176,8 +122,16 @@ class _ImageSearchState extends State<ImageSearch> {
                                 : Container(
                                     height: 300,
                                     width: 300,
-                                    child: Image.file(
-                                      _image,
+                                    child: Column(
+                                      children: [
+                                        Image.file(
+                                          _image,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(prediction.toString())
+                                      ],
                                     ),
                                   ),
                             SizedBox(
@@ -209,7 +163,11 @@ class _ImageSearchState extends State<ImageSearch> {
               children: [
                 new FloatingActionButton(
                   heroTag: "btn1",
-                  onPressed: getImage,
+                  onPressed: () {
+                    setState(() {
+                      prediction = getImage();
+                    });
+                  },
                   backgroundColor: Colors.grey,
                   child: Icon(Icons.add_a_photo),
                 ),

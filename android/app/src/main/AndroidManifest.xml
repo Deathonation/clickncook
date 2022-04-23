@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.clickncook">
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- This Line -->
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
    <application
         android:label="clickncook"
         android:icon="@mipmap/ic_launcher"
