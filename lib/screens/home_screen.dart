@@ -1,4 +1,5 @@
 import 'package:clickncook/end_drawer.dart';
+import 'package:clickncook/screens/login_screen.dart';
 import 'package:clickncook/screens/recent_searches.dart';
 import 'package:clickncook/services/auth_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -178,6 +179,8 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(Icons.logout),
               onPressed: () async {
                 await authService.signOut();
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => LoginScreen()));
               })
         ],
         bottom: PreferredSize(

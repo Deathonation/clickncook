@@ -1,6 +1,7 @@
 import 'package:clickncook/screens/home_screen.dart';
 import 'package:clickncook/screens/registration_screen.dart';
 import 'package:clickncook/services/auth_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
@@ -19,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   // editing controller
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
+  String errormessage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -28,17 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
         autofocus: false,
         controller: emailController,
         keyboardType: TextInputType.emailAddress,
-        validator: (value) {
-          if (value.isEmpty) {
-            return ("Please Enter Your Email");
-          }
-          // reg expression for email validation
-          if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-              .hasMatch(value)) {
-            return ("Please Enter a valid email");
-          }
-          return null;
-        },
+        validator: validateEmail,
         onSaved: (value) {
           emailController.text = value;
         },
@@ -62,15 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
         controller: passwordController,
         obscureText: true,
         // ignore: missing_return
-        validator: (value) {
-          RegExp regex = new RegExp(r'^.{6,}$');
-          if (value.isEmpty) {
-            return ("Password is required for login");
-          }
-          if (!regex.hasMatch(value)) {
-            return ("Enter Valid Password(Min. 6 Character)");
-          }
-        },
+        validator: validatePassword,
         onSaved: (value) {
           passwordController.text = value;
         },
@@ -95,16 +79,17 @@ class _LoginScreenState extends State<LoginScreen> {
       child: MaterialButton(
           padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           minWidth: MediaQuery.of(context).size.width,
-          onPressed: () {
-            // Navigator.pushReplacement(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) => new HomePage(
-            //               searchtext: null,
-            //             )));
-            // signIn(emailController.text, passwordController.text);
-            authService.signInWithEmailAndPassword(
-                emailController.text, passwordController.text);
+          onPressed: () async {
+            if (_formKey.currentState.validate()) {
+              try {
+                authService.signInWithEmailAndPassword(
+                    emailController.text, passwordController.text);
+                errormessage = '';
+              } on FirebaseAuthException catch (error) {
+                errormessage = error.message;
+              }
+              setState(() {});
+            }
           },
           child: Text(
             "Login",
@@ -121,14 +106,14 @@ class _LoginScreenState extends State<LoginScreen> {
               fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.amber[50].withOpacity(0.5),
-        body: Center(
-          child: SingleChildScrollView(
-            child: Container(
-              color: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.all(36.0),
-                child: Form(
-                  key: _formKey,
+        body: Form(
+          key: _formKey,
+          child: Center(
+            child: SingleChildScrollView(
+              child: Container(
+                color: Colors.transparent,
+                child: Padding(
+                  padding: const EdgeInsets.all(36.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -145,6 +130,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(height: 25),
                       passwordField,
                       SizedBox(height: 35),
+                      Center(
+                        child: Text(
+                          errormessage,
+                          style: TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.w900,
+                              backgroundColor: Colors.white.withOpacity(0.3)),
+                        ),
+                      ),
                       loginButton,
                       SizedBox(height: 15),
                       Row(
@@ -219,4 +213,26 @@ class _LoginScreenState extends State<LoginScreen> {
   //     }
   //   }
   // }
+}
+
+String validateEmail(String formEmail) {
+  if (formEmail.isEmpty || formEmail == null) {
+    return ("Please Enter Your Email");
+  }
+  // reg expression for email validation
+  if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(formEmail)) {
+    return ("Please Enter a valid email");
+  }
+  return null;
+}
+
+String validatePassword(String formPassword) {
+  RegExp regex = new RegExp(r'^.{8,}$');
+  if (formPassword.isEmpty) {
+    return ("Password is required for login");
+  }
+  if (!regex.hasMatch(formPassword)) {
+    return ("Enter Valid Password(Min. 8 Character)");
+  }
+  return null;
 }

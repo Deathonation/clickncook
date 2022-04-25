@@ -4,6 +4,7 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:clickncook/services/auth_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
@@ -19,7 +20,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   // final _auth = FirebaseAuth.instance;
 
   // string for displaying the error Message
-  // String? errorMessage;
+  String errorMessage = '';
 
   // our form key
   final _formKey = GlobalKey<FormState>();
@@ -98,17 +99,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         autofocus: false,
         controller: emailEditingController,
         keyboardType: TextInputType.emailAddress,
-        validator: (value) {
-          if (value.isEmpty) {
-            return ("Please Enter Your Email");
-          }
-          // reg expression for email validation
-          if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-              .hasMatch(value)) {
-            return ("Please Enter a valid email");
-          }
-          return null;
-        },
+        validator: validateEmail,
         onSaved: (value) {
           firstNameEditingController.text = value;
         },
@@ -132,15 +123,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         controller: passwordEditingController,
         obscureText: true,
         // ignore: missing_return
-        validator: (value) {
-          RegExp regex = new RegExp(r'^.{6,}$');
-          if (value.isEmpty) {
-            return ("Password is required for login");
-          }
-          if (!regex.hasMatch(value)) {
-            return ("Enter Valid Password(Min. 6 Character)");
-          }
-        },
+        validator: validatePassword,
         onSaved: (value) {
           firstNameEditingController.text = value;
         },
@@ -206,13 +189,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           minWidth: MediaQuery.of(context).size.width,
           onPressed: () async {
-            // signUp(emailEditingController.text, passwordEditingController.text);
-            await authService.createUserWithEmailAndPassword(
-                emailEditingController.text, passwordEditingController.text);
+            if (_formKey.currentState.validate()) {
+              try {
+                await authService.createUserWithEmailAndPassword(
+                    emailEditingController.text,
+                    passwordEditingController.text);
 
-            addInfo();
-
-            Navigator.pop(context);
+                addInfo();
+                errorMessage = '';
+              } on FirebaseAuthException catch (error) {
+                errorMessage = error.message;
+              }
+              setState(() {});
+              Navigator.pop(context);
+            }
           },
           child: Text(
             "SignUp",
@@ -229,25 +219,25 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.amber[100].withOpacity(0.5),
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.red),
-            onPressed: () {
-              // passing this to our root
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
-        body: Center(
-          child: SingleChildScrollView(
-            child: Container(
-              color: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.all(36.0),
-                child: Form(
-                  key: _formKey,
+        // appBar: AppBar(
+        //   backgroundColor: Colors.transparent,
+        //   elevation: 0,
+        //   leading: IconButton(
+        //     icon: Icon(Icons.arrow_back, color: Colors.red),
+        //     onPressed: () {
+        //       // passing this to our root
+        //       Navigator.of(context).pop();
+        //     },
+        //   ),
+        // ),
+        body: Form(
+          key: _formKey,
+          child: Center(
+            child: SingleChildScrollView(
+              child: Container(
+                color: Colors.transparent,
+                child: Padding(
+                  padding: const EdgeInsets.all(36.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -269,6 +259,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       SizedBox(height: 20),
                       confirmPasswordField,
                       SizedBox(height: 20),
+                      Center(
+                        child: Text(
+                          errorMessage,
+                          style: TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.w900,
+                              backgroundColor: Colors.white.withOpacity(0.3)),
+                        ),
+                      ),
+                      SizedBox(height: 15),
                       signUpButton,
                       SizedBox(height: 15),
                     ],
@@ -281,68 +281,26 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       ),
     );
   }
-  // void signUp(String email, String password) async {
-  //   if (_formKey.currentState!.validate()) {
-  //     try {
-  //       await _auth
-  //           .createUserWithEmailAndPassword(email: email, password: password)
-  //           .then((value) => {postDetailsToFirestore()})
-  //           .catchError((e) {
-  //         Fluttertoast.showToast(msg: e!.message);
-  //       });
-  //     } on FirebaseAuthException catch (error) {
-  //       switch (error.code) {
-  //         case "invalid-email":
-  //           errorMessage = "Your email address appears to be malformed.";
-  //           break;
-  //         case "wrong-password":
-  //           errorMessage = "Your password is wrong.";
-  //           break;
-  //         case "user-not-found":
-  //           errorMessage = "User with this email doesn't exist.";
-  //           break;
-  //         case "user-disabled":
-  //           errorMessage = "User with this email has been disabled.";
-  //           break;
-  //         case "too-many-requests":
-  //           errorMessage = "Too many requests";
-  //           break;
-  //         case "operation-not-allowed":
-  //           errorMessage = "Signing in with Email and Password is not enabled.";
-  //           break;
-  //         default:
-  //           errorMessage = "An undefined Error happened.";
-  //       }
-  //       Fluttertoast.showToast(msg: errorMessage!);
-  //       print(error.code);
-  //     }
-  //   }
-  // }
-  // postDetailsToFirestore() async {
-  //   // calling our firestore
-  //   // calling our user model
-  //   // sedning these values
+}
 
-  //   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-  //   User? user = _auth.currentUser;
+String validateEmail(String formEmail) {
+  if (formEmail.isEmpty || formEmail == null) {
+    return ("Please Enter Your Email");
+  }
+  // reg expression for email validation
+  if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(formEmail)) {
+    return ("Please Enter a valid email");
+  }
+  return null;
+}
 
-  //   UserModel userModel = UserModel();
-
-  //   // writing all the values
-  //   userModel.email = user!.email;
-  //   userModel.uid = user.uid;
-  //   userModel.firstName = firstNameEditingController.text;
-  //   userModel.secondName = secondNameEditingController.text;
-
-  //   await firebaseFirestore
-  //       .collection("users")
-  //       .doc(user.uid)
-  //       .set(userModel.toMap());
-  //   Fluttertoast.showToast(msg: "Account created successfully :) ");
-
-  //   Navigator.pushAndRemoveUntil(
-  //       (context),
-  //       MaterialPageRoute(builder: (context) => HomeScreen()),
-  //       (route) => false);
-  // }
+String validatePassword(String formPassword) {
+  RegExp regex = new RegExp(r'^.{8,}$');
+  if (formPassword.isEmpty) {
+    return ("Password is required for login");
+  }
+  if (!regex.hasMatch(formPassword)) {
+    return ("Enter Valid Password(Min. 8 Character)");
+  }
+  return null;
 }
