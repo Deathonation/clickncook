@@ -66,7 +66,8 @@ class _ImageSearchState extends State<ImageSearch> {
       print(url);
 
       final response = await http.post(
-          Uri.parse("https://0494-103-177-175-123.in.ngrok.io/modelapi/"),
+          Uri.parse(
+              "https://6c7c-2402-3a80-187e-e1f4-3889-28b1-d70b-e875.in.ngrok.io/modelapi/"),
           body: {"img_link": url});
       print(response.body);
       prediction = response.body;
