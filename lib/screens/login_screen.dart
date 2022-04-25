@@ -88,10 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
               } on FirebaseAuthException catch (error) {
                 errormessage = error.message;
               }
-              setState(() {
-                authService.signInWithEmailAndPassword(
-                    emailController.text, passwordController.text);
-              });
+              setState(() {});
             }
           },
           child: Text(
