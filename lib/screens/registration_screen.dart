@@ -201,7 +201,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 errorMessage = error.message;
               }
               setState(() {});
-              Navigator.pop(context);
+              // Navigator.pop(context);
             }
           },
           child: Text(
